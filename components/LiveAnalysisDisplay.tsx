@@ -66,14 +66,39 @@ const LiveAnalysisDisplay: React.FC<LiveAnalysisDisplayProps> = ({ analysis, his
     };
 
     const { bgColor: dominanceBgColor, isIntense: isDominanceBgIntense } = getDominanceStyling(analysis.dominance.difference);
-    const isAlertActive = Math.abs(analysis.dominance.difference) > 0.5;
+
+    const getAlertInfo = (difference: number): { text: string; className: string } | null => {
+        const absDiff = Math.abs(difference);
+
+        if (absDiff > 0.5) {
+            return {
+                text: 'ALERTA!',
+                className: 'font-bold text-red-500 animate-pulse text-sm px-2 py-0.5 bg-red-500/10 rounded-md border border-red-500/30'
+            };
+        }
+        if (absDiff >= 0.35) {
+            return {
+                text: 'Momento Crítico',
+                className: 'font-bold text-yellow-400 text-sm px-2 py-0.5 bg-yellow-400/10 rounded-md border border-yellow-400/30'
+            };
+        }
+        if (absDiff > 0.2) {
+            return {
+                text: 'Dominio Claro',
+                className: 'font-bold text-cyan-400 text-sm px-2 py-0.5 bg-cyan-400/10 rounded-md border border-cyan-400/30'
+            };
+        }
+        return null;
+    };
+
+    const alertInfo = getAlertInfo(analysis.dominance.difference);
 
     const sectionTitle = (
         <div className="flex items-center gap-4">
             <span>{`Live Match Dynamics (Min ${liveStats.minute}')`}</span>
-            {isAlertActive && (
-                <span className="font-bold text-red-500 animate-pulse text-sm px-2 py-0.5 bg-red-500/10 rounded-md border border-red-500/30">
-                    ALERTA!
+            {alertInfo && (
+                <span className={alertInfo.className}>
+                    {alertInfo.text}
                 </span>
             )}
         </div>
