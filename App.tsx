@@ -30,6 +30,7 @@ const App: React.FC = () => {
     const [preMatchOdds, setPreMatchOdds] = useState<PreMatchOdds>({ h: 0, d: 0, a: 0, probs: null });
     const [historicalAverages, setHistoricalAverages] = useState<HistoricalAverages>({ hgf: '', hgc: '', agf: '', agc: '' });
     const [liveStats, setLiveStats] = useState<LiveStats>(initialLiveStats);
+    const [teamNames, setTeamNames] = useState<{h: string, a: string} | null>(null);
 
     const [prediction, setPrediction] = useState<PoissonPrediction | null>(null);
     const [liveAnalysis, setLiveAnalysis] = useState<LiveAnalysis | null>(null);
@@ -48,6 +49,9 @@ const App: React.FC = () => {
             if(parsedData.liveStats) {
                 setLiveStats(parsedData.liveStats);
                 setLiveAnalysis(null);
+            }
+            if (parsedData.teamNames) {
+                setTeamNames(parsedData.teamNames);
             }
             toast.success('Data auto-filled successfully!');
         } catch (error) {
@@ -106,6 +110,7 @@ const App: React.FC = () => {
         setPreMatchOdds({ h: 0, d: 0, a: 0, probs: null });
         setHistoricalAverages({ hgf: '', hgc: '', agf: '', agc: '' });
         setLiveStats(initialLiveStats);
+        setTeamNames(null);
         setPrediction(null);
         setLiveAnalysis(null);
         setDominanceHistory([]);
@@ -290,6 +295,7 @@ Genera el JSON ahora.
                         analysis={liveAnalysis}
                         history={dominanceHistory}
                         liveStats={liveStats}
+                        teamNames={teamNames}
                     />
                     <TradingSuggestions
                         latest={latestSuggestions}

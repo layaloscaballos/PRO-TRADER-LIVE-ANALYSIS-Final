@@ -9,6 +9,7 @@ interface LiveAnalysisDisplayProps {
     analysis: LiveAnalysis | null;
     history: DominancePoint[];
     liveStats: LiveStats;
+    teamNames: { h: string; a: string } | null;
 }
 
 interface StatCardProps {
@@ -33,7 +34,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, valueColor, bgColor =
     );
 };
 
-const LiveAnalysisDisplay: React.FC<LiveAnalysisDisplayProps> = ({ analysis, history, liveStats }) => {
+const LiveAnalysisDisplay: React.FC<LiveAnalysisDisplayProps> = ({ analysis, history, liveStats, teamNames }) => {
 
     const renderEmptyState = () => (
         <div className="h-full flex flex-col items-center justify-center text-gray-500 text-center p-8">
@@ -94,12 +95,21 @@ const LiveAnalysisDisplay: React.FC<LiveAnalysisDisplayProps> = ({ analysis, his
     const alertInfo = getAlertInfo(analysis.dominance.difference);
 
     const sectionTitle = (
-        <div className="flex items-center gap-4">
-            <span>{`Live Match Dynamics (Min ${liveStats.minute}')`}</span>
-            {alertInfo && (
-                <span className={alertInfo.className}>
-                    {alertInfo.text}
-                </span>
+        <div className="flex items-center justify-between flex-grow">
+            <div className="flex items-center gap-4">
+                <span>{`Live Match Dynamics (Min ${liveStats.minute}')`}</span>
+                {alertInfo && (
+                    <span className={alertInfo.className}>
+                        {alertInfo.text}
+                    </span>
+                )}
+            </div>
+             {teamNames && (
+                 <div className="text-sm text-gray-300 font-normal hidden md:block text-right truncate">
+                    <span className="truncate">{teamNames.h}</span>
+                    <span className="mx-2 font-thin text-gray-500">vs</span>
+                    <span className="truncate">{teamNames.a}</span>
+                </div>
             )}
         </div>
     );

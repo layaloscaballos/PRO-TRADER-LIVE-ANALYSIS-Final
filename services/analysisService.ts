@@ -3,11 +3,18 @@ import { LiveStats, PreMatchOdds, PreMatchProbs, PoissonPrediction, LiveAnalysis
 // ===================================
 // Auto-fill Data Parser
 // ===================================
-export const parseScoreTrendText = (text: string): { preMatchOdds?: Partial<PreMatchOdds>, liveStats?: LiveStats } => {
+export const parseScoreTrendText = (text: string): { preMatchOdds?: Partial<PreMatchOdds>, liveStats?: LiveStats, teamNames?: {h: string, a: string} } => {
     if (!text.trim()) throw new Error('Input text is empty.');
     
-    const result: { preMatchOdds?: Partial<PreMatchOdds>, liveStats?: LiveStats } = {};
+    const result: { preMatchOdds?: Partial<PreMatchOdds>, liveStats?: LiveStats, teamNames?: {h: string, a: string} } = {};
     const parsedLiveStats: Partial<LiveStats> = {};
+
+    // This regex looks for a team name surrounded by empty lines, followed by the score/minute block, followed by the second team name also surrounded by empty lines.
+    const teamNamesRegex = /\n\n([^\n\r]+)\n\n\d+:\d+\n\(\d+:\d+\)\n\d{1,2}:\d{2}\n\n([^\n\r]+)\n/;
+    const teamNamesMatch = text.match(teamNamesRegex);
+    if (teamNamesMatch) {
+        result.teamNames = { h: teamNamesMatch[1].trim(), a: teamNamesMatch[2].trim() };
+    }
 
     const oddsRegex = /(?:Pre-partido|Pre-match)[\s\S]*?1\s+X\s+2[^\n\r]*\n\s*(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)/;
     const oddsMatch = text.match(oddsRegex);
