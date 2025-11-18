@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import { LiveAnalysis, DominancePoint, LiveStats } from '../types';
 import { Section } from './Section';
-import { Activity, Gauge, TrendingUp, Target } from 'lucide-react';
+import { Activity, TrendingUp, Target } from 'lucide-react';
 
 interface LiveAnalysisDisplayProps {
     analysis: LiveAnalysis | null;
@@ -149,11 +149,24 @@ const LiveAnalysisDisplay: React.FC<LiveAnalysisDisplayProps> = ({ analysis, his
                     <LineChart data={history} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#4A5568" />
                         <XAxis dataKey="minute" stroke="#A0AEC0" tick={{ fontSize: 12 }} />
-                        <YAxis stroke="#A0AEC0" tick={{ fontSize: 12 }} />
+                        <YAxis stroke="#A0AEC0" tick={{ fontSize: 12 }} domain={[-0.6, 0.6]} />
                         <Tooltip
                             contentStyle={{ backgroundColor: '#1A202C', border: '1px solid #4A5568', borderRadius: '0.5rem' }}
                             labelStyle={{ color: '#E2E8F0' }}
                         />
+                        
+                        {/* Dominio Claro */}
+                        <ReferenceArea y1={0.2} y2={0.35} fill="rgba(34, 211, 238, 0.5)" strokeOpacity={0} />
+                        <ReferenceArea y1={-0.35} y2={-0.2} fill="rgba(34, 211, 238, 0.5)" strokeOpacity={0} />
+                        
+                        {/* Momento Crítico */}
+                        <ReferenceArea y1={0.35} y2={0.5} fill="rgba(250, 204, 21, 0.5)" strokeOpacity={0} />
+                        <ReferenceArea y1={-0.5} y2={-0.35} fill="rgba(250, 204, 21, 0.5)" strokeOpacity={0} />
+                        
+                        {/* Alerta */}
+                        <ReferenceArea y1={0.5} y2={0.6} fill="rgba(239, 68, 68, 0.5)" strokeOpacity={0} />
+                        <ReferenceArea y1={-0.6} y2={-0.5} fill="rgba(239, 68, 68, 0.5)" strokeOpacity={0} />
+
                         <ReferenceLine y={0} stroke="#A0AEC0" strokeDasharray="5 5" />
                         <Line type="monotone" dataKey="difference" name="Dominance (H - A)" stroke="#2DD4BF" strokeWidth={2} dot={false} />
                     </LineChart>
